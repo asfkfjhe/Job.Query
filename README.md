@@ -38,9 +38,10 @@ This project is designed to streamline the recruitment process by providing a jo
 
 ### 3. Result 
 
-**Job and Resume Matching**
+- **Job and Resume Matching**
 ![Alt text](/media/image2.png)
 
 
 - **Chatbot**
+
 ![Alt text](/media/image.png)

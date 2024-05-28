@@ -1,0 +1,11 @@
+langchain 
+langchain-community 
+langchain-openai
+# dotenv
+PyPDF2
+scikit-learn
+yake
+torch
+nltk
+pydantic
+transformers

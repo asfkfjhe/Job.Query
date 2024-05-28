@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Matching</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        input[type="file"], input[type="text"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .result {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Job Matching</h1>
+        <form id="jobForm">
+            <input type="text" id="jobDescription" name="job_description" placeholder="Enter Job Description" required>
+            <input type="file" id="resumes" name="resumes" accept=".pdf" multiple required>
+            <button type="button" onclick="submitForm()">Calculate Similarity</button>
+        </form>
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        async function submitForm() {
+            const form = document.getElementById('jobForm');
+            const formData = new FormData(form);
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerText = 'Loading...';
+
+            try {
+                const response = await fetch('/calculate_similarity/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                responseDiv.innerHTML = ''; // Clear previous results
+                
+                if (data.results !== undefined) {
+                    data.results.forEach(result => {
+                        responseDiv.innerHTML += `<div class="result">
+                            <p><strong>Job Description:</strong> ${result.job_description}</p>
+                            <p><strong>Selected Resumes:</strong> ${result.selected_resumes}</p>
+                            <p><strong>Similarity Scores:</strong> ${result.similarity_scores}</p>
+                        </div>`;
+                    });
+                } else if (data.error !== undefined) {
+                    responseDiv.innerText = `Error: ${data.error}`;
+                } else {
+                    responseDiv.innerText = 'An unknown error occurred.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                responseDiv.innerText = 'An error occurred while processing your request.';
+            }
+        }
+    </script>
+</body>
+</html>
